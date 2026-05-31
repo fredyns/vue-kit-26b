@@ -12,7 +12,6 @@
 /resources/js/wayfinder
 /vendor
 .DS_Store
-.env
 .env.backup
 .env.production
 .phpactor.json
@@ -27,3 +26,8 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/.env
+/docker-compose.yml
+*.bkp
+*.bak
+*~*
