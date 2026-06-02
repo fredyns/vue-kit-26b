@@ -14,8 +14,16 @@ return [
     ],
     [
         'id' => Str::uuid(),
+        'name' => 'Sys-Employee',
+        'email' => 'employee@employee.com',
+        'email_verified_at' => now(),
+        'password' => Hash::make('password'),
+        'remember_token' => Str::random(10),
+    ],
+    [
+        'id' => Str::uuid(),
         'name' => 'Sys-User',
-        'email' => 'user@testing.com',
+        'email' => 'user@user.com',
         'email_verified_at' => now(),
         'password' => Hash::make('password'),
         'remember_token' => Str::random(10),
