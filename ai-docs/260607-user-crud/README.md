@@ -16,7 +16,8 @@ Create an authenticated User management feature using Laravel single-action invo
 - Pages live in `resources/js/pages`.
 - Existing authenticated routes are grouped in `routes/web.php` and `routes/settings.php`.
 - The `User` model uses UUIDs and has searchable `name` and `email` fields.
-- User roles already exist through `App\Enums\UserRole`:
+- User roles are defined in `App\Models\RBAC\Role.php` (database-backed, used at runtime).
+- `App\Enums\UserRole` provides the initial role values for seeders only:
   - `super-admin`
   - `internal`
   - `external`
@@ -167,7 +168,7 @@ Responsibilities:
 - Validate with `StoreUserRequest`.
 - Create user using validated fields only.
 - Hashing can rely on the `User` model password cast.
-- Assign selected role IDs or role names through existing `User` role helper methods.
+- Assign selected roles via `User` role helper methods (referencing `App\Models\RBAC\Role`).
 - Flash a success toast with `Inertia::flash(...)`.
 - Redirect to the user detail page or user index.
 
@@ -190,7 +191,7 @@ Responsibilities:
 - Validate with `UpdateUserRequest`.
 - Update `name`, `email`, and optionally `password` only when provided.
 - Reset `email_verified_at` when email changes, matching profile behavior.
-- Sync role assignments safely.
+- Sync role assignments safely using `App\Models\RBAC\Role`.
 - Flash a success toast.
 - Redirect back to edit or show.
 
@@ -221,7 +222,7 @@ Suggested store rules:
 - `email`: required email max 255 unique users email
 - `password`: required confirmed using `Password::defaults()`
 - `roles`: nullable array
-- `roles.*`: exists in RBAC roles table or valid role name, depending on selected implementation
+- `roles.*`: exists in `rbac_roles` table (validate against `App\Models\RBAC\Role::name`)
 
 Suggested update rules:
 
@@ -229,7 +230,7 @@ Suggested update rules:
 - `email`: required email max 255 unique users email ignoring current user
 - `password`: nullable confirmed using `Password::defaults()`
 - `roles`: nullable array
-- `roles.*`: exists in RBAC roles table or valid role name
+- `roles.*`: exists in `rbac_roles` table (validate against `App\Models\RBAC\Role::name`)
 
 ## Frontend Plan
 
