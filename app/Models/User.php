@@ -22,6 +22,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * This is the model class for table "users".
@@ -44,6 +45,7 @@ class User extends Authenticatable implements PasskeyUser
     use HasUuids;
     use ModelDocBlocks;
     use Searchable;
+    use HasRoles;
 
     protected array $searchableFields = [
         'name',
