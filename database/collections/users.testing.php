@@ -11,6 +11,7 @@ return [
         'email_verified_at' => now(),
         'password' => Hash::make('admin'),
         'remember_token' => Str::random(10),
+        'created_at' => now(),
     ],
     [
         'id' => Str::uuid(),
@@ -19,6 +20,7 @@ return [
         'email_verified_at' => now(),
         'password' => Hash::make('password'),
         'remember_token' => Str::random(10),
+        'created_at' => now(),
     ],
     [
         'id' => Str::uuid(),
@@ -27,5 +29,6 @@ return [
         'email_verified_at' => now(),
         'password' => Hash::make('password'),
         'remember_token' => Str::random(10),
+        'created_at' => now(),
     ],
 ];
