@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Search, Users } from 'lucide-vue-next';
+import { Eye, Search, Users } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import Heading from '@/components/Heading.vue';
 import { Badge } from '@/components/ui/badge';
@@ -134,12 +134,13 @@ function formatDate(dateString: string): string {
                         <TableHead>Roles</TableHead>
                         <TableHead>Verified</TableHead>
                         <TableHead>Created</TableHead>
+                        <TableHead class="w-16">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     <TableEmpty
                         v-if="users.data.length === 0"
-                        :colspan="5"
+                        :colspan="6"
                     >
                         No users found.
                     </TableEmpty>
@@ -184,6 +185,14 @@ function formatDate(dateString: string): string {
                         </TableCell>
                         <TableCell>
                             {{ formatDate(user.created_at) }}
+                        </TableCell>
+                        <TableCell>
+                            <Button variant="ghost" size="icon" as-child>
+                                <Link :href="show.url(user.id)">
+                                    <Eye class="size-4" />
+                                    <span class="sr-only">View user</span>
+                                </Link>
+                            </Button>
                         </TableCell>
                     </TableRow>
                 </TableBody>
