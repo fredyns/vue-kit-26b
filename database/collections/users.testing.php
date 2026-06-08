@@ -12,6 +12,7 @@ return [
         'password' => Hash::make('admin'),
         'remember_token' => Str::random(10),
         'created_at' => now(),
+        'updated_at' => now(),
     ],
     [
         'id' => Str::uuid(),
@@ -21,6 +22,7 @@ return [
         'password' => Hash::make('password'),
         'remember_token' => Str::random(10),
         'created_at' => now(),
+        'updated_at' => now(),
     ],
     [
         'id' => Str::uuid(),
@@ -30,5 +32,6 @@ return [
         'password' => Hash::make('password'),
         'remember_token' => Str::random(10),
         'created_at' => now(),
+        'updated_at' => now(),
     ],
 ];
