@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Users\CreateUserController;
+use App\Http\Controllers\Users\DestroyUserController;
 use App\Http\Controllers\Users\EditUserController;
 use App\Http\Controllers\Users\IndexUserController;
 use App\Http\Controllers\Users\ShowUserController;
@@ -19,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('users/{user}', ShowUserController::class)->name('users.show');
     Route::get('users/{user}/edit', EditUserController::class)->name('users.edit');
     Route::patch('users/{user}', UpdateUserController::class)->name('users.update');
+    Route::delete('users/{user}', DestroyUserController::class)->name('users.destroy');
 });
 
 require __DIR__.'/settings.php';

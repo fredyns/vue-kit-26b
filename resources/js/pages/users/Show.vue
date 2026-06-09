@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
-import { ArrowLeft, Calendar, Mail, Shield, User } from 'lucide-vue-next';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { ArrowLeft, Calendar, Mail, Shield, Trash2, User } from 'lucide-vue-next';
 import Heading from '@/components/Heading.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,10 +19,11 @@ type User = {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
-    web_roles: Role[];
-    can: {
-        update: boolean;
-        delete: boolean;
+    web_roles?: Role[];
+    can?: {
+        view?: boolean;
+        update?: boolean;
+        delete?: boolean;
     };
 };
 
@@ -52,6 +53,12 @@ function formatDate(dateString: string): string {
         day: 'numeric',
     });
 }
+
+function deleteUser() {
+    if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        router.delete(route('users.destroy', props.user.id));
+    }
+}
 </script>
 
 <template>
@@ -71,11 +78,16 @@ function formatDate(dateString: string): string {
             <Heading :title="user.name" description="User details" />
 
             <div class="flex gap-2">
-                <Button v-if="user.can.update" variant="outline" as-child>
+                <Button v-if="user.can?.update" variant="outline" as-child>
                     <Link :href="edit.url(user.id)">Edit</Link>
                 </Button>
-                <Button v-if="user.can.delete" variant="destructive" as-child>
-                    <Link href="#">Delete</Link>
+                <Button
+                    v-if="user.can?.delete"
+                    variant="destructive"
+                    @click="deleteUser"
+                >
+                    <Trash2 class="size-4" />
+                    Delete
                 </Button>
             </div>
         </div>
@@ -131,14 +143,14 @@ function formatDate(dateString: string): string {
                         </p>
                         <div class="mt-2 flex flex-wrap gap-2">
                             <Badge
-                                v-for="role in user.web_roles"
+                                v-for="role in user.web_roles ?? []"
                                 :key="role.id"
                                 variant="secondary"
                             >
                                 {{ role.name }}
                             </Badge>
                             <p
-                                v-if="user.web_roles.length === 0"
+                                v-if="(user.web_roles ?? []).length === 0"
                                 class="text-sm text-muted-foreground"
                             >
                                 No roles assigned
