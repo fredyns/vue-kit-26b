@@ -21,7 +21,7 @@ class ShowUserController extends Controller
         $user->load('webRoles');
 
         return Inertia::render('users/Show', [
-            'user' => new UserResource($user),
+            'user' => (new UserResource($user))->resolve(request()),
         ]);
     }
 }

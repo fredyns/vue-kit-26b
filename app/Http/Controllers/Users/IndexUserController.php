@@ -28,7 +28,7 @@ class IndexUserController extends Controller
             ->withQueryString();
 
         return Inertia::render('users/Index', [
-            'users' => UserResource::collection($users),
+            'users' => $users->through(fn (User $user) => (new UserResource($user))->resolve($request)),
             'filters' => [
                 'search' => $request->string('search')->toString(),
             ],
