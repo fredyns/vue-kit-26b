@@ -33,6 +33,7 @@ class IndexUserController extends Controller
             ],
             'can' => [
                 'create' => $request->user()->can('create', User::class),
+                'update' => $request->user()->can('update', new User),
             ],
         ]);
     }
