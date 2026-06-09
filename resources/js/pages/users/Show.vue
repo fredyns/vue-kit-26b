@@ -19,7 +19,11 @@ type User = {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
-    roles: Role[];
+    web_roles: Role[];
+    can: {
+        update: boolean;
+        delete: boolean;
+    };
 };
 
 defineOptions({
@@ -39,10 +43,6 @@ defineOptions({
 
 const props = defineProps<{
     user: User;
-    can: {
-        update: boolean;
-        delete: boolean;
-    };
 }>();
 
 function formatDate(dateString: string): string {
@@ -71,10 +71,10 @@ function formatDate(dateString: string): string {
             <Heading :title="user.name" description="User details" />
 
             <div class="flex gap-2">
-                <Button v-if="can.update" variant="outline" as-child>
+                <Button v-if="user.can.update" variant="outline" as-child>
                     <Link :href="edit.url(user.id)">Edit</Link>
                 </Button>
-                <Button v-if="can.delete" variant="destructive" as-child>
+                <Button v-if="user.can.delete" variant="destructive" as-child>
                     <Link href="#">Delete</Link>
                 </Button>
             </div>
@@ -131,14 +131,14 @@ function formatDate(dateString: string): string {
                         </p>
                         <div class="mt-2 flex flex-wrap gap-2">
                             <Badge
-                                v-for="role in user.roles"
+                                v-for="role in user.web_roles"
                                 :key="role.id"
                                 variant="secondary"
                             >
                                 {{ role.name }}
                             </Badge>
                             <p
-                                v-if="user.roles.length === 0"
+                                v-if="user.web_roles.length === 0"
                                 class="text-sm text-muted-foreground"
                             >
                                 No roles assigned

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -17,23 +18,10 @@ class ShowUserController extends Controller
     {
         Gate::authorize('view', $user);
 
+        $user->load('webRoles');
+
         return Inertia::render('users/Show', [
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'email_verified_at' => $user->email_verified_at,
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at,
-                'roles' => $user->webRoles->map(fn($role) => [
-                    'id' => $role->id,
-                    'name' => $role->name,
-                ]),
-            ],
-            'can' => [
-                'update' => (bool)auth()->user()?->can('update', $user),
-                'delete' => (bool)auth()->user()?->can('delete', $user),
-            ],
+            'user' => new UserResource($user),
         ]);
     }
 }
