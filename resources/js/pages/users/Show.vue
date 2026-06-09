@@ -19,11 +19,11 @@ type User = {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
-    web_roles?: Role[];
-    can?: {
-        view?: boolean;
-        update?: boolean;
-        delete?: boolean;
+    web_roles: Role[];
+    can: {
+        view: boolean;
+        update: boolean;
+        delete: boolean;
     };
 };
 
@@ -78,11 +78,11 @@ function deleteUser() {
             <Heading :title="user.name" description="User details" />
 
             <div class="flex gap-2">
-                <Button v-if="user.can?.update" variant="outline" as-child>
+                <Button v-if="user.can.update" variant="outline" as-child>
                     <Link :href="edit.url(user.id)">Edit</Link>
                 </Button>
                 <Button
-                    v-if="user.can?.delete"
+                    v-if="user.can.delete"
                     variant="destructive"
                     @click="deleteUser"
                 >
@@ -143,14 +143,14 @@ function deleteUser() {
                         </p>
                         <div class="mt-2 flex flex-wrap gap-2">
                             <Badge
-                                v-for="role in user.web_roles ?? []"
+                                v-for="role in user.web_roles"
                                 :key="role.id"
                                 variant="secondary"
                             >
                                 {{ role.name }}
                             </Badge>
                             <p
-                                v-if="(user.web_roles ?? []).length === 0"
+                                v-if="user.web_roles.length === 0"
                                 class="text-sm text-muted-foreground"
                             >
                                 No roles assigned

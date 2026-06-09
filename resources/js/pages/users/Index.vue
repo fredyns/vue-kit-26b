@@ -32,6 +32,7 @@ type User = {
     can: {
         view: boolean;
         update: boolean;
+        delete: boolean;
     };
 };
 

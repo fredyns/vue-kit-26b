@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -28,7 +27,24 @@ class IndexUserController extends Controller
             ->withQueryString();
 
         return Inertia::render('users/Index', [
-            'users' => $users->through(fn (User $user) => (new UserResource($user))->resolve($request)),
+            'users' => $users->through(function (User $user) use ($request) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'email_verified_at' => $user->email_verified_at,
+                    'created_at' => $user->created_at,
+                    'web_roles' => $user->webRoles->map(fn ($role) => [
+                        'id' => $role->id,
+                        'name' => $role->name,
+                    ]),
+                    'can' => [
+                        'view' => $request->user()->can('view', $user),
+                        'update' => $request->user()->can('update', $user),
+                        'delete' => $request->user()->can('delete', $user),
+                    ],
+                ];
+            }),
             'filters' => [
                 'search' => $request->string('search')->toString(),
             ],
