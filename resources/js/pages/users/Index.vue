@@ -29,6 +29,10 @@ type User = {
     email_verified_at: string | null;
     created_at: string;
     web_roles: Role[];
+    can: {
+        view: boolean;
+        update: boolean;
+    };
 };
 
 type PaginationLink = {
@@ -53,7 +57,6 @@ const props = defineProps<{
     };
     can: {
         create: boolean;
-        update: boolean;
     };
 }>();
 
@@ -151,11 +154,13 @@ function formatDate(dateString: string): string {
                     >
                         <TableCell class="font-medium">
                             <Link
+                                v-if="user.can.view"
                                 :href="show.url(user.id)"
                                 class="hover:underline"
                             >
                                 {{ user.name }}
                             </Link>
+                            <span v-else>{{ user.name }}</span>
                         </TableCell>
                         <TableCell>{{ user.email }}</TableCell>
                         <TableCell>
@@ -189,13 +194,13 @@ function formatDate(dateString: string): string {
                         </TableCell>
                         <TableCell>
                             <div class="flex gap-1">
-                                <Button variant="ghost" size="icon" as-child>
+                                <Button v-if="user.can.view" variant="ghost" size="icon" as-child>
                                     <Link :href="show.url(user.id)">
                                         <Eye class="size-4" />
                                         <span class="sr-only">View user</span>
                                     </Link>
                                 </Button>
-                                <Button v-if="can.update" variant="ghost" size="icon" as-child>
+                                <Button v-if="user.can.update" variant="ghost" size="icon" as-child>
                                     <Link :href="edit.url(user.id)">
                                         <Pencil class="size-4" />
                                         <span class="sr-only">Edit user</span>
