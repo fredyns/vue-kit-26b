@@ -5,7 +5,7 @@ import Heading from '@/components/Heading.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { index } from '@/routes/users';
+import { edit, index } from '@/routes/users';
 
 type Role = {
     id: string;
@@ -72,7 +72,7 @@ function formatDate(dateString: string): string {
 
             <div class="flex gap-2">
                 <Button v-if="can.update" variant="outline" as-child>
-                    <Link href="#">Edit</Link>
+                    <Link :href="edit.url(user.id)">Edit</Link>
                 </Button>
                 <Button v-if="can.delete" variant="destructive" as-child>
                     <Link href="#">Delete</Link>

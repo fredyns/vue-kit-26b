@@ -1,26 +1,33 @@
 <script setup lang="ts">
 import { Form, Head, Link } from '@inertiajs/vue3';
-import { ArrowLeft, LoaderCircle, Users } from 'lucide-vue-next';
+import { ArrowLeft, LoaderCircle, Save } from 'lucide-vue-next';
 import { ref } from 'vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { create, index, store } from '@/routes/users';
+import { index, show, update } from '@/routes/users';
 
 type Role = {
     id: string;
     name: string;
 };
 
+type User = {
+    id: string;
+    name: string;
+    email: string;
+    roles: string[];
+};
+
 const props = defineProps<{
+    user: User;
     roles: Role[];
 }>();
 
-const selectedRoles = ref<string[]>([]);
+const selectedRoles = ref<string[]>([...props.user.roles]);
 
 defineOptions({
     layout: {
@@ -30,8 +37,8 @@ defineOptions({
                 href: index.url(),
             },
             {
-                title: 'Create',
-                href: create.url(),
+                title: 'Edit User',
+                href: '#',
             },
         ],
     },
@@ -39,23 +46,22 @@ defineOptions({
 </script>
 
 <template>
-    <Head title="Create User" />
+    <Head :title="`Edit ${user.name}`" />
 
     <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
         <div class="flex items-center gap-4">
             <Button variant="outline" size="sm" as-child>
-                <Link :href="index.url()">
+                <Link :href="show.url(user.id)">
                     <ArrowLeft class="size-4" />
-                    Back to Users
+                    Back to User
                 </Link>
             </Button>
         </div>
 
-        <Heading title="Create User" description="Create a new user account" />
+        <Heading :title="`Edit ${user.name}`" description="Update user account details" />
 
         <Form
-            v-bind="store.form()"
-            :reset-on-success="true"
+            v-bind="update.form(user.id)"
             v-slot="{ errors, processing }"
             class="max-w-xl space-y-6"
         >
@@ -67,6 +73,7 @@ defineOptions({
                         name="name"
                         type="text"
                         placeholder="Full name"
+                        :default-value="user.name"
                         required
                         autofocus
                     />
@@ -80,31 +87,10 @@ defineOptions({
                         name="email"
                         type="email"
                         placeholder="email@example.com"
+                        :default-value="user.email"
                         required
                     />
                     <InputError :message="errors.email" />
-                </div>
-
-                <div class="space-y-2">
-                    <Label for="password">Password</Label>
-                    <PasswordInput
-                        id="password"
-                        name="password"
-                        placeholder="Password"
-                        required
-                    />
-                    <InputError :message="errors.password" />
-                </div>
-
-                <div class="space-y-2">
-                    <Label for="password_confirmation">Confirm password</Label>
-                    <PasswordInput
-                        id="password_confirmation"
-                        name="password_confirmation"
-                        placeholder="Confirm password"
-                        required
-                    />
-                    <InputError :message="errors.password_confirmation" />
                 </div>
 
                 <div v-if="roles.length > 0" class="space-y-3">
@@ -125,10 +111,9 @@ defineOptions({
                                         if (checked) {
                                             selectedRoles.push(role.name);
                                         } else {
-                                            selectedRoles =
-                                                selectedRoles.filter(
-                                                    (r) => r !== role.name,
-                                                );
+                                            selectedRoles = selectedRoles.filter(
+                                                (r) => r !== role.name,
+                                            );
                                         }
                                     }
                                 "
@@ -148,8 +133,12 @@ defineOptions({
             <div class="flex items-center gap-4">
                 <Button type="submit" :disabled="processing">
                     <LoaderCircle v-if="processing" class="size-4 animate-spin" />
-                    <Users v-else class="size-4" />
-                    Create User
+                    <Save v-else class="size-4" />
+                    Save Changes
+                </Button>
+
+                <Button variant="outline" as-child>
+                    <Link :href="show.url(user.id)">Cancel</Link>
                 </Button>
             </div>
         </Form>

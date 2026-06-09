@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Eye, Search, Users } from 'lucide-vue-next';
+import { Eye, Pencil, Search, Users } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import Heading from '@/components/Heading.vue';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +15,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { create, index, show } from '@/routes/users';
+import { create, edit, index, show } from '@/routes/users';
 
 type Role = {
     id: string;
@@ -53,6 +53,7 @@ const props = defineProps<{
     };
     can: {
         create: boolean;
+        update: boolean;
     };
 }>();
 
@@ -134,7 +135,7 @@ function formatDate(dateString: string): string {
                         <TableHead>Roles</TableHead>
                         <TableHead>Verified</TableHead>
                         <TableHead>Created</TableHead>
-                        <TableHead class="w-16">Actions</TableHead>
+                        <TableHead class="w-24">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -187,12 +188,20 @@ function formatDate(dateString: string): string {
                             {{ formatDate(user.created_at) }}
                         </TableCell>
                         <TableCell>
-                            <Button variant="ghost" size="icon" as-child>
-                                <Link :href="show.url(user.id)">
-                                    <Eye class="size-4" />
-                                    <span class="sr-only">View user</span>
-                                </Link>
-                            </Button>
+                            <div class="flex gap-1">
+                                <Button variant="ghost" size="icon" as-child>
+                                    <Link :href="show.url(user.id)">
+                                        <Eye class="size-4" />
+                                        <span class="sr-only">View user</span>
+                                    </Link>
+                                </Button>
+                                <Button v-if="can.update" variant="ghost" size="icon" as-child>
+                                    <Link :href="edit.url(user.id)">
+                                        <Pencil class="size-4" />
+                                        <span class="sr-only">Edit user</span>
+                                    </Link>
+                                </Button>
+                            </div>
                         </TableCell>
                     </TableRow>
                 </TableBody>

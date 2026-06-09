@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Users\CreateUserController;
+use App\Http\Controllers\Users\EditUserController;
 use App\Http\Controllers\Users\IndexUserController;
 use App\Http\Controllers\Users\ShowUserController;
 use App\Http\Controllers\Users\StoreUserController;
+use App\Http\Controllers\Users\UpdateUserController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'Welcome')->name('home');
@@ -15,6 +17,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('users/create', CreateUserController::class)->name('users.create');
     Route::post('users', StoreUserController::class)->name('users.store');
     Route::get('users/{user}', ShowUserController::class)->name('users.show');
+    Route::get('users/{user}/edit', EditUserController::class)->name('users.edit');
+    Route::patch('users/{user}', UpdateUserController::class)->name('users.update');
 });
 
 require __DIR__.'/settings.php';
