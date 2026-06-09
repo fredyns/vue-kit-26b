@@ -5,7 +5,7 @@ import Heading from '@/components/Heading.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { edit, index } from '@/routes/users';
+import { destroy, edit, index } from '@/routes/users';
 
 type Role = {
     id: string;
@@ -56,7 +56,7 @@ function formatDate(dateString: string): string {
 
 function deleteUser() {
     if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-        router.delete(route('users.destroy', props.user.id));
+        router.delete(destroy.url(props.user.id));
     }
 }
 </script>
