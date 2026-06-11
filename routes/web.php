@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Users\ChangePasswordUserController;
 use App\Http\Controllers\Users\CreateUserController;
 use App\Http\Controllers\Users\DestroyUserController;
 use App\Http\Controllers\Users\EditUserController;
 use App\Http\Controllers\Users\IndexUserController;
 use App\Http\Controllers\Users\ShowUserController;
 use App\Http\Controllers\Users\StoreUserController;
+use App\Http\Controllers\Users\UpdatePasswordUserController;
 use App\Http\Controllers\Users\UpdateUserController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +23,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('users/{user}/edit', EditUserController::class)->name('users.edit');
     Route::patch('users/{user}', UpdateUserController::class)->name('users.update');
     Route::delete('users/{user}', DestroyUserController::class)->name('users.destroy');
+    Route::get('users/{user}/change-password', ChangePasswordUserController::class)->name('users.change-password');
+    Route::patch('users/{user}/change-password', UpdatePasswordUserController::class)->name('users.update-password');
 });
 
 require __DIR__.'/settings.php';

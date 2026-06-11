@@ -34,6 +34,7 @@ class ShowUserController extends Controller
                 'can' => [
                     'view' => request()->user()?->can('view', $user) ?? false,
                     'update' => request()->user()?->can('update', $user) ?? false,
+                    'changePassword' => request()->user()?->can('changePassword', $user) ?? false,
                     'delete' => request()->user()?->can('delete', $user) ?? false,
                 ],
             ],

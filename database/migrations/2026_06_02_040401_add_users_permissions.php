@@ -1,8 +1,10 @@
 <?php
 
+use App\DB\BasePermissionMigration;
 use App\Enums\UserRole;
 
-return new class extends \App\DB\BasePermissionMigration {
+return new class extends BasePermissionMigration
+{
     public function permissions(): array
     {
         return [
@@ -14,6 +16,7 @@ return new class extends \App\DB\BasePermissionMigration {
             'users.create',
             'users.update',
             'users.delete',
+            'users.change-password',
         ];
     }
 };

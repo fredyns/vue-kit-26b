@@ -39,6 +39,14 @@ class UserPolicy
     }
 
     /**
+     * Determine whether the user can change the model's password.
+     */
+    public function changePassword(User $user, User $model): bool
+    {
+        return $user->hasPermissionTo('users.change-password');
+    }
+
+    /**
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, User $model): bool

@@ -5,7 +5,7 @@ import Heading from '@/components/Heading.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { destroy, edit, index } from '@/routes/users';
+import { changePassword, destroy, edit, index } from '@/routes/users';
 
 type Role = {
     id: string;
@@ -23,6 +23,7 @@ type User = {
     can: {
         view: boolean;
         update: boolean;
+        changePassword: boolean;
         delete: boolean;
     };
 };
@@ -80,6 +81,9 @@ function deleteUser() {
             <div class="flex gap-2">
                 <Button v-if="user.can.update" variant="outline" as-child>
                     <Link :href="edit.url(user.id)">Edit</Link>
+                </Button>
+                <Button v-if="user.can.changePassword" variant="outline" as-child>
+                    <Link :href="changePassword.url(user.id)">Change Password</Link>
                 </Button>
                 <Button
                     v-if="user.can.delete"
