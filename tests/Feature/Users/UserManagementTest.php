@@ -2,9 +2,6 @@
 
 use App\Models\RBAC\Permission;
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-
-uses(DatabaseTransactions::class);
 
 beforeEach(function () {
     $this->withoutVite();

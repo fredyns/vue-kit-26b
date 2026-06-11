@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -42,16 +41,16 @@ class User extends Authenticatable implements PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
+
+    use HasRoles;
     use HasUuids;
     use ModelDocBlocks;
     use Searchable;
-    use HasRoles;
 
     protected array $searchableFields = [
         'name',
         'email',
     ];
-
 
     /**
      * Get the attributes that should be cast.
@@ -70,7 +69,7 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
-     * @param string[]|UserRole[] $roles
+     * @param  string[]|UserRole[]  $roles
      */
     public function addRoleNames(array $roles): void
     {
@@ -85,9 +84,11 @@ class User extends Authenticatable implements PasskeyUser
             $role = $role->value;
         }
 
+        $roleName = $role;
+
         foreach (AuthGuard::values() as $guardName) {
-            $role = Role::findOrCreate($role, $guardName);
-            $this->addRole($role);
+            $roleModel = Role::findOrCreate($roleName, $guardName);
+            $this->addRole($roleModel);
         }
     }
 
@@ -112,7 +113,7 @@ class User extends Authenticatable implements PasskeyUser
             ->where($modelKey, $this->id)
             ->exists();
 
-        if (!$exists) {
+        if (! $exists) {
             DB::table($tableNames['model_has_roles'])->insert([
                 $pivotRole => $role->id,
                 'model_type' => User::class,
@@ -122,7 +123,7 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
-     * @param UserRole[]|string[] $roles
+     * @param  UserRole[]|string[]  $roles
      */
     public function removeRoleNames(array $roles): void
     {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RBAC\Roles\IndexRoleController;
 use App\Http\Controllers\Users\ChangePasswordUserController;
 use App\Http\Controllers\Users\CreateUserController;
 use App\Http\Controllers\Users\DestroyUserController;
@@ -25,6 +26,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('users/{user}', DestroyUserController::class)->name('users.destroy');
     Route::get('users/{user}/change-password', ChangePasswordUserController::class)->name('users.change-password');
     Route::patch('users/{user}/change-password', UpdatePasswordUserController::class)->name('users.update-password');
+
+    Route::get('roles', IndexRoleController::class)->name('roles.index');
 });
 
 require __DIR__.'/settings.php';
