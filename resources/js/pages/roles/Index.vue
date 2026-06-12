@@ -43,8 +43,10 @@ type PaginatedRoles = {
 
 const props = defineProps<{
     roles: PaginatedRoles;
+    guards: string[];
     filters: {
         search: string;
+        guard: string;
     };
     can: {
         create: boolean;
@@ -63,24 +65,32 @@ defineOptions({
 });
 
 const search = ref(props.filters.search);
+const activeGuard = ref(props.filters.guard);
 let searchTimeout: ReturnType<typeof setTimeout> | null = null;
+
+function navigate() {
+    router.get(
+        index.url(),
+        {
+            search: search.value || undefined,
+            guard: activeGuard.value || undefined,
+        },
+        { preserveState: true, replace: true },
+    );
+}
 
 watch(search, (value) => {
     if (searchTimeout) {
         clearTimeout(searchTimeout);
     }
 
-    searchTimeout = setTimeout(() => {
-        router.get(
-            index.url(),
-            { search: value || undefined },
-            {
-                preserveState: true,
-                replace: true,
-            },
-        );
-    }, 300);
+    searchTimeout = setTimeout(navigate, 300);
 });
+
+function setGuard(guard: string) {
+    activeGuard.value = activeGuard.value === guard ? '' : guard;
+    navigate();
+}
 
 function formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -106,7 +116,7 @@ function formatDate(dateString: string): string {
             </Button>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
             <div class="relative max-w-sm flex-1">
                 <Search
                     class="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2"
@@ -117,6 +127,26 @@ function formatDate(dateString: string): string {
                     placeholder="Search roles..."
                     class="pl-9"
                 />
+            </div>
+            <div class="flex items-center gap-1.5">
+                <Button
+                    :variant="activeGuard === '' ? 'default' : 'outline'"
+                    size="sm"
+                    class="rounded-full"
+                    @click="setGuard('')"
+                >
+                    All
+                </Button>
+                <Button
+                    v-for="guard in guards"
+                    :key="guard"
+                    :variant="activeGuard === guard ? 'default' : 'outline'"
+                    size="sm"
+                    class="rounded-full"
+                    @click="setGuard(guard)"
+                >
+                    {{ guard }}
+                </Button>
             </div>
         </div>
 
