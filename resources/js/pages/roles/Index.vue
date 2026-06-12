@@ -79,7 +79,7 @@ function navigate() {
     );
 }
 
-watch(search, (value) => {
+watch(search, () => {
     if (searchTimeout) {
         clearTimeout(searchTimeout);
     }
@@ -174,7 +174,9 @@ function formatDate(dateString: string): string {
                         :key="role.id"
                     >
                         <TableCell class="font-medium">
-                            {{ role.name }}
+                            <Link :href="`/roles/${role.id}`" class="hover:underline">
+                                {{ role.name }}
+                            </Link>
                         </TableCell>
                         <TableCell>
                             <Badge variant="outline">{{ role.guard_name }}</Badge>
