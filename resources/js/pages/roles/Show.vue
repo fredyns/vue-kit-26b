@@ -5,7 +5,7 @@ import Heading from '@/components/Heading.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { index } from '@/routes/roles';
+import { edit, index } from '@/routes/roles';
 
 type Permission = {
     id: string;
@@ -111,10 +111,10 @@ const groupedPermissions = groupPermissionsByResource(props.role.permissions);
 
             <div class="flex gap-2">
                 <Button v-if="can.update" variant="outline" as-child>
-<!--                    <Link :href="route('roles.edit', role.id)">-->
-<!--                        <Pencil class="size-4" />-->
-<!--                        Edit-->
-<!--                    </Link>-->
+                    <Link :href="edit.url({ role: role.id })">
+                        <Pencil class="size-4" />
+                        Edit
+                    </Link>
                 </Button>
                 <Button
                     v-if="can.delete"

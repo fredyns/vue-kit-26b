@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\RBAC\Roles\CreateRoleController;
+use App\Http\Controllers\RBAC\Roles\EditRoleController;
 use App\Http\Controllers\RBAC\Roles\IndexRoleController;
 use App\Http\Controllers\RBAC\Roles\ShowRoleController;
 use App\Http\Controllers\RBAC\Roles\StoreRoleController;
+use App\Http\Controllers\RBAC\Roles\UpdateRoleController;
 use App\Http\Controllers\Users\ChangePasswordUserController;
 use App\Http\Controllers\Users\CreateUserController;
 use App\Http\Controllers\Users\DestroyUserController;
@@ -34,6 +36,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('roles/create', CreateRoleController::class)->name('roles.create');
     Route::post('roles', StoreRoleController::class)->name('roles.store');
     Route::get('roles/{role}', ShowRoleController::class)->name('roles.show');
+    Route::get('roles/{role}/edit', EditRoleController::class)->name('roles.edit');
+    Route::patch('roles/{role}', UpdateRoleController::class)->name('roles.update');
 });
 
 require __DIR__.'/settings.php';
