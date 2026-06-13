@@ -4,17 +4,16 @@ namespace App\DB;
 
 use App\Enums\UserRole;
 use App\Models\RBAC\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 /**
  * Base class for permission migrations.
  *
  * Simplifies adding permissions and assigning them to roles.
  * Supports multiple guards (web, sanctum).
- *
  */
 abstract class BasePermissionMigration extends BaseRbacMigration
 {
-
     public function permissions(): array
     {
         return [
@@ -45,12 +44,13 @@ abstract class BasePermissionMigration extends BaseRbacMigration
 
             $this->grant($permission, $roles);
         }
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
     /**
      * @param  string  $permission
      * @param  UserRole[]  $roles
-     * @return void
      */
     protected function grant(string $permissionName, array $roleEnums): void
     {
@@ -92,5 +92,7 @@ abstract class BasePermissionMigration extends BaseRbacMigration
         Permission::whereIn('guard_name', $this->guards)
             ->whereIn('name', $permissionNames)
             ->delete();
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 }
