@@ -119,3 +119,121 @@ test('index page includes permissions count per role', function () {
             )
         );
 });
+
+test('guests are redirected from the create page', function () {
+    $this->get(route('roles.create'))
+        ->assertRedirect(route('login'));
+});
+
+test('unauthorized users cannot view the create page', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->get(route('roles.create'))
+        ->assertForbidden();
+});
+
+test('authorized users can view the create page', function () {
+    $user = createUserWithRbacPermission('rbac.create');
+
+    $this->actingAs($user)
+        ->get(route('roles.create'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('roles/Create')
+            ->has('permissions')
+            ->has('guards')
+        );
+});
+
+test('create page groups permissions by resource prefix', function () {
+    $user = createUserWithRbacPermission('rbac.create');
+    Permission::findOrCreate('posts.create', 'web');
+    Permission::findOrCreate('posts.delete', 'web');
+
+    $this->actingAs($user)
+        ->get(route('roles.create'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('roles/Create')
+            ->has('permissions.posts')
+        );
+});
+
+test('a role can be created with valid data', function () {
+    $user = createUserWithRbacPermission('rbac.create');
+
+    $this->actingAs($user)
+        ->post(route('roles.store'), [
+            'name' => 'editor',
+            'guard_name' => 'web',
+        ])
+        ->assertRedirect();
+
+    expect(Role::where('name', 'editor')->exists())->toBeTrue();
+});
+
+test('a role can be created with permissions', function () {
+    $user = createUserWithRbacPermission('rbac.create');
+    Permission::findOrCreate('posts.create', 'web');
+    Permission::findOrCreate('posts.delete', 'web');
+
+    $this->actingAs($user)
+        ->post(route('roles.store'), [
+            'name' => 'editor',
+            'guard_name' => 'web',
+            'permissions' => ['posts.create', 'posts.delete'],
+        ])
+        ->assertRedirect();
+
+    $role = Role::where('name', 'editor')->first();
+    expect($role)->not->toBeNull();
+    expect($role->permissions->pluck('name')->toArray())
+        ->toContain('posts.create')
+        ->toContain('posts.delete');
+});
+
+test('store validation rejects a duplicate role name', function () {
+    $user = createUserWithRbacPermission('rbac.create');
+    Role::findOrCreate('editor', 'web');
+
+    $this->actingAs($user)
+        ->post(route('roles.store'), [
+            'name' => 'editor',
+            'guard_name' => 'web',
+        ])
+        ->assertSessionHasErrors('name');
+});
+
+test('store validation rejects missing required fields', function () {
+    $user = createUserWithRbacPermission('rbac.create');
+
+    $this->actingAs($user)
+        ->post(route('roles.store'), [])
+        ->assertSessionHasErrors(['name', 'guard_name']);
+});
+
+test('store validation rejects invalid permission names', function () {
+    $user = createUserWithRbacPermission('rbac.create');
+
+    $this->actingAs($user)
+        ->post(route('roles.store'), [
+            'name' => 'editor',
+            'guard_name' => 'web',
+            'permissions' => ['nonexistent.permission'],
+        ])
+        ->assertSessionHasErrors('permissions.0');
+});
+
+test('unauthorized users cannot store a role', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->post(route('roles.store'), [
+            'name' => 'editor',
+            'guard_name' => 'web',
+        ])
+        ->assertForbidden();
+
+    expect(Role::where('name', 'editor')->exists())->toBeFalse();
+});

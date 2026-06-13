@@ -15,7 +15,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { index } from '@/routes/roles';
+import { create, index } from '@/routes/roles';
 
 type Role = {
     id: string;
@@ -109,7 +109,7 @@ function formatDate(dateString: string): string {
             <Heading title="Roles" description="Manage roles and permissions" />
 
             <Button v-if="can.create" as-child>
-                <Link href="#">
+                <Link :href="create.url()">
                     <Shield class="size-4" />
                     Create Role
                 </Link>
