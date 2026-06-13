@@ -5,7 +5,7 @@ import Heading from '@/components/Heading.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { edit, index } from '@/routes/roles';
+import { destroy, edit, index } from '@/routes/roles';
 
 type Permission = {
     id: string;
@@ -57,7 +57,7 @@ function formatDate(dateString: string): string {
 
 function deleteRole() {
     if (confirm('Are you sure you want to delete this role? This action cannot be undone.')) {
-        // router.delete(route('roles.destroy', props.role.id));
+        router.delete(destroy.url({ role: props.role.id }));
     }
 }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\RBAC\Roles\CreateRoleController;
+use App\Http\Controllers\RBAC\Roles\DestroyRoleController;
 use App\Http\Controllers\RBAC\Roles\EditRoleController;
 use App\Http\Controllers\RBAC\Roles\IndexRoleController;
 use App\Http\Controllers\RBAC\Roles\ShowRoleController;
@@ -38,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('roles/{role}', ShowRoleController::class)->name('roles.show');
     Route::get('roles/{role}/edit', EditRoleController::class)->name('roles.edit');
     Route::patch('roles/{role}', UpdateRoleController::class)->name('roles.update');
+    Route::delete('roles/{role}', DestroyRoleController::class)->name('roles.destroy');
 });
 
 require __DIR__.'/settings.php';

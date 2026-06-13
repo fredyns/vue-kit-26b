@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form, Head, Link } from '@inertiajs/vue3';
+import { Form, Head, Link, router } from '@inertiajs/vue3';
 import { ArrowLeft, LoaderCircle, Shield, Trash2 } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import Heading from '@/components/Heading.vue';
@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { index, show, update } from '@/routes/roles';
+import { destroy, index, show, update } from '@/routes/roles';
 
 type Permission = {
     id: string;
@@ -89,7 +89,7 @@ const totalPermissions = computed(() =>
 
 function deleteRole() {
     if (confirm('Are you sure you want to delete this role? This action cannot be undone.')) {
-        // router.delete(route('roles.destroy', props.role.id));
+        router.delete(destroy.url({ role: props.role.id }));
     }
 }
 </script>
